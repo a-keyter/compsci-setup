@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Essentials Setup</title>
+<meta name="description" content="Setup guide for AI Essentials for CompSci, a CompSoc x Generative Minds workshop: install OpenCode, Node.js and GitHub CLI, create GitHub and Vercel accounts, and start your Next.js portfolio.">
+<meta name="theme-color" content="#265343">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23265343'/%3E%3Ccircle cx='16' cy='13' r='6' fill='none' stroke='%23FFEE8E' stroke-width='2.5'/%3E%3Cpath d='M12 22h8M13 26h6' stroke='%23FFEE8E' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<script>
+  /* Apply saved theme and laptop choice before paint, so nothing flashes. */
+  (function () {
+    var d = document.documentElement, P = 'gm-compsci-v1-';
+    function get(k) { try { return localStorage.getItem(P + k); } catch (e) { return null; } }
+    var t = get('theme');
+    if (t === 'light' || t === 'dark') d.setAttribute('data-theme', t);
+    var os = get('os');
+    if (os !== 'mac' && os !== 'win') {
+      var ua = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || navigator.userAgent || '';
+      os = /mac/i.test(ua) ? 'mac' : 'win';
+    }
+    d.setAttribute('data-os', os);
+  })();
+</script>
+<style>
+:root {
+  --bg: #EDEBE0;
+  --surface: #FFFFFF;
+  --surface-2: rgba(128, 161, 121, 0.10);
+  --green: #265343;
+  --sage: #80A179;
+  --accent: #FFEE8E;
+  --ink: #312B29;
+  --heading: #265343;
+  --text: rgba(49, 43, 41, 0.82);
+  --muted: rgba(49, 43, 41, 0.62);
+  --line: rgba(38, 83, 67, 0.14);
+  --line-strong: rgba(38, 83, 67, 0.28);
+  --code-bg: #1F3A30;
+  --code-head: #193128;
+  --code-text: #F3F1E7;
+  --done: #3F7A5A;
+  --link: #265343;
+  --shadow: 0 4px 24px rgba(38, 83, 67, 0.08);
+  --shadow-lift: 0 8px 32px rgba(38, 83, 67, 0.12);
+  --focus: #265343;
+  --btn-bg: #265343;
+  --btn-fg: #FFFFFF;
+  --warn-bg: rgba(255, 238, 142, 0.45);
+  --warn-line: #C9A800;
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  --topbar-h: 64px;
+  --deck-h: 72px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121C18; --surface: #1A2722; --surface-2: rgba(128, 161, 121, 0.12);
+    --heading: #CFE0C8; --ink: #ECE9DE; --text: rgba(236, 233, 222, 0.86); --muted: rgba(236, 233, 222, 0.62);
+    --line: rgba(207, 224, 200, 0.12); --line-strong: rgba(207, 224, 200, 0.26);
+    --code-bg: #0C1512; --code-head: #08100D; --code-text: #EDEBE0; --done: #8CC29A; --link: #FFEE8E;
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.25); --shadow-lift: 0 8px 32px rgba(0, 0, 0, 0.35);
+    --focus: #FFEE8E; --btn-bg: #FFEE8E; --btn-fg: #1A2722;
+    --warn-bg: rgba(255, 238, 142, 0.10); --warn-line: #FFEE8E;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121C18; --surface: #1A2722; --surface-2: rgba(128, 161, 121, 0.12);
+  --heading: #CFE0C8; --ink: #ECE9DE; --text: rgba(236, 233, 222, 0.86); --muted: rgba(236, 233, 222, 0.62);
+  --line: rgba(207, 224, 200, 0.12); --line-strong: rgba(207, 224, 200, 0.26);
+  --code-bg: #0C1512; --code-head: #08100D; --code-text: #EDEBE0; --done: #8CC29A; --link: #FFEE8E;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.25); --shadow-lift: 0 8px 32px rgba(0, 0, 0, 0.35);
+  --focus: #FFEE8E; --btn-bg: #FFEE8E; --btn-fg: #1A2722;
+  --warn-bg: rgba(255, 238, 142, 0.10); --warn-line: #FFEE8E;
+  color-scheme: dark;
+}
+
+/* Only show the steps for the chosen laptop */
+html[data-os="mac"] [data-os="win"],
+html[data-os="win"] [data-os="mac"] { display: none !important; }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--topbar-h) + 16px); }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.65;
+  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; color: var(--heading); letter-spacing: -0.02em; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(32px, 5vw, 48px); letter-spacing: -0.03em; margin-bottom: 12px; }
+h2 { font-size: clamp(24px, 3vw, 30px); margin: 40px 0 12px; }
+h3 { font-size: 20px; }
+p { margin: 0 0 12px; }
+a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+strong { color: var(--ink); font-weight: 600; }
+code { font-family: var(--font-mono); font-size: 0.88em; background: var(--surface-2); color: var(--ink); padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
+kbd { font-family: var(--font-body); font-size: 0.85em; font-weight: 600; color: var(--ink); background: var(--surface); border: 1px solid var(--line-strong); border-bottom-width: 2px; border-radius: 6px; padding: 0 6px; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+button { font: inherit; cursor: pointer; }
+.small { font-size: 14px; color: var(--muted); }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sage); margin: 0 0 10px; }
+.lede { font-size: 18px; color: var(--text); max-width: 62ch; }
+.skip { position: absolute; left: -9999px; top: 8px; z-index: 100; background: var(--btn-bg); color: var(--btn-fg); padding: 8px 14px; border-radius: 10px; }
+.skip:focus { left: 8px; }
+
+/* Top bar */
+.topbar {
+  position: sticky; top: 0; z-index: 40; height: var(--topbar-h);
+  display: flex; align-items: center; gap: 12px; padding: 0 16px;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--heading); min-width: 0; }
+.logo-mark { width: 36px; height: 36px; flex: none; color: var(--heading); }
+.brand-text { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.brand-title { font-family: var(--font-display); font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand-sub { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.seg { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 999px; padding: 3px; background: var(--surface); }
+.seg button { border: 0; background: transparent; color: var(--text); padding: 4px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; }
+.seg button[aria-pressed="true"] { background: var(--btn-bg); color: var(--btn-fg); }
+.icon-btn { width: 40px; height: 40px; display: inline-grid; place-items: center; border-radius: 12px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--heading); }
+.icon-btn svg { width: 20px; height: 20px; }
+.toc-btn { display: none; }
+.theme-btn .moon { display: none; }
+:root[data-theme="dark"] .theme-btn .sun { display: none; }
+:root[data-theme="dark"] .theme-btn .moon { display: block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-btn .sun { display: none; }
+  :root:not([data-theme="light"]) .theme-btn .moon { display: block; }
+}
+
+/* Shell */
+.shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); max-width: 1240px; margin: 0 auto; }
+.toc {
+  position: sticky; top: var(--topbar-h); align-self: start;
+  height: calc(100vh - var(--topbar-h)); overflow-y: auto; padding: 28px 16px 28px 20px;
+  border-right: 1px solid var(--line);
+}
+.toc-progress { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; margin-bottom: 20px; box-shadow: var(--shadow); }
+.toc-progress-top { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; }
+.toc-progress-top strong { font-size: 14px; }
+.bar { height: 8px; background: var(--surface-2); border-radius: 999px; overflow: hidden; margin-top: 8px; }
+.bar > span { display: block; height: 100%; width: 0; background: var(--sage); border-radius: 999px; transition: width 300ms ease-in-out; }
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc a {
+  display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: 8px;
+  padding: 9px 10px; border-radius: 12px; text-decoration: none; color: var(--text); font-size: 15px; line-height: 1.3;
+}
+.toc a:hover { background: var(--surface-2); }
+.toc a[aria-current="page"] { background: var(--surface); color: var(--heading); font-weight: 600; box-shadow: var(--shadow); }
+.nav-n { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 8px; background: var(--surface-2); font-size: 13px; font-weight: 600; color: var(--heading); }
+.toc a[aria-current="page"] .nav-n { background: var(--green); color: #fff; }
+:root[data-theme="dark"] .toc a[aria-current="page"] .nav-n { background: var(--accent); color: #1A2722; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .toc a[aria-current="page"] .nav-n { background: var(--accent); color: #1A2722; } }
+.nav-p { font-size: 12px; color: var(--muted); font-weight: 500; }
+.nav-p.is-complete { color: var(--done); font-weight: 700; }
+
+/* Main */
+main { min-width: 0; padding: 40px 48px calc(var(--deck-h) + 48px); }
+.page { max-width: 760px; min-width: 0; }
+.step, .step-body, .code, .checklist li, .faq details { min-width: 0; max-width: 100%; }
+.page:focus { outline: none; }
+.page h1:focus { outline: none; }
+
+/* Welcome */
+.hero { background: var(--green); color: #fff; border-radius: 24px; padding: 36px; margin-bottom: 32px; }
+.hero h1 { color: #fff; }
+.hero .eyebrow { color: var(--accent); }
+.hero .lede { color: rgba(255, 255, 255, 0.85); }
+:root[data-theme="dark"] .hero { background: #1E3A30; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .hero { background: #1E3A30; } }
+.event { display: grid; gap: 10px; margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.25); }
+.event > div { display: grid; grid-template-columns: 110px 1fr; gap: 12px; }
+.event-k { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255, 255, 255, 0.65); padding-top: 3px; }
+.event-v { color: #fff; }
+.pick h2 { margin-top: 0; }
+.pick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0 12px; }
+.pick-btn {
+  text-align: left; padding: 22px 24px; border-radius: 16px; background: var(--surface);
+  border: 2px solid var(--line); box-shadow: var(--shadow); color: var(--text);
+  display: flex; flex-direction: column; gap: 4px; transition: box-shadow 300ms ease-in-out, border-color 300ms ease-in-out, transform 300ms ease-in-out;
+}
+.pick-btn:hover { box-shadow: var(--shadow-lift); transform: translateY(-1px); }
+.pick-btn[aria-pressed="true"] { border-color: var(--green); }
+:root[data-theme="dark"] .pick-btn[aria-pressed="true"] { border-color: var(--accent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pick-btn[aria-pressed="true"] { border-color: var(--accent); } }
+.pick-title { font-family: var(--font-display); font-size: 26px; color: var(--heading); }
+.pick-sub { font-size: 14px; color: var(--muted); }
+
+/* Overview */
+.tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 24px 0 8px; }
+.tool { background: var(--surface); border-radius: 16px; padding: 18px 20px; box-shadow: var(--shadow); border-left: 4px solid var(--sage); }
+.tool:nth-child(3n+1) { border-left-color: var(--green); }
+.tool:nth-child(3n+3) { border-left-color: var(--accent); }
+.tool h3 { margin-bottom: 4px; }
+.tool p { font-size: 15px; margin-bottom: 6px; }
+.tool a { font-size: 14px; font-weight: 600; }
+.plain { padding-left: 20px; margin: 0; }
+.plain li { margin-bottom: 8px; }
+
+/* OS switch inside page */
+.os-switch { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 4px 0 16px; font-size: 14px; color: var(--muted); }
+.os-switch button { border: 1px solid var(--line-strong); background: var(--surface); color: var(--text); padding: 4px 14px; border-radius: 999px; font-size: 14px; font-weight: 600; }
+.os-switch button[aria-pressed="true"] { background: var(--btn-bg); color: var(--btn-fg); border-color: transparent; }
+
+/* Steps */
+.steps { list-style: none; margin: 24px 0 0; padding: 0; counter-reset: step; display: grid; gap: 16px; }
+.step {
+  counter-increment: step; position: relative; background: var(--surface); border-radius: 16px;
+  padding: 22px 24px 18px 72px; box-shadow: var(--shadow); border: 1px solid transparent;
+  transition: border-color 300ms ease-in-out;
+}
+.step::before {
+  content: counter(step); position: absolute; left: 22px; top: 20px; width: 34px; height: 34px;
+  display: grid; place-items: center; border-radius: 10px; background: var(--surface-2);
+  color: var(--heading); font-weight: 700; font-size: 15px;
+}
+.step.is-done { border-color: var(--done); }
+.step.is-done::before { content: "\2713"; background: var(--done); color: #fff; }
+:root[data-theme="dark"] .step.is-done::before { color: #10201A; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .step.is-done::before { color: #10201A; } }
+.step-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.step-head h3 { padding-top: 4px; }
+.done { display: inline-flex; align-items: center; gap: 6px; flex: none; font-size: 14px; font-weight: 600; color: var(--muted); padding: 4px 10px 4px 8px; border-radius: 999px; border: 1px solid var(--line-strong); cursor: pointer; user-select: none; }
+.done input, .checklist input { width: 18px; height: 18px; accent-color: var(--done); margin: 0; cursor: pointer; }
+.step.is-done .done { color: var(--done); border-color: var(--done); }
+.step-body > :last-child { margin-bottom: 0; }
+.choices { margin: 0 0 12px; padding-left: 22px; }
+.shot { margin: 12px 0 16px; }
+.shot img { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line-strong); box-shadow: var(--shadow); background: #0C0C0C; }
+.shot figcaption { font-size: 14px; color: var(--muted); margin-top: 8px; }
+.expect { font-size: 15px; background: var(--surface-2); border-radius: 12px; padding: 10px 14px; margin: 12px 0; }
+.expect-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--done); margin-right: 6px; }
+.note { border-left: 4px solid var(--sage); background: var(--surface-2); border-radius: 0 12px 12px 0; padding: 10px 14px; margin: 12px 0; font-size: 15px; }
+.note-tag { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--heading); margin-bottom: 2px; }
+.note p { margin: 0; }
+.note-warn { border-left-color: var(--warn-line); background: var(--warn-bg); }
+
+/* Code */
+.code { margin: 12px 0; border-radius: 14px; overflow: hidden; background: var(--code-bg); border: 1px solid rgba(0, 0, 0, 0.15); }
+.code-head { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px 6px 14px; background: var(--code-head); color: rgba(243, 241, 231, 0.7); font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.copy { border: 1px solid rgba(243, 241, 231, 0.3); background: transparent; color: #F3F1E7; border-radius: 8px; padding: 3px 12px; font-size: 13px; font-weight: 600; text-transform: none; letter-spacing: 0; min-width: 72px; transition: background 200ms ease-in-out, color 200ms ease-in-out; }
+.copy:hover { background: rgba(243, 241, 231, 0.12); }
+.copy.is-copied { background: var(--accent); color: #1F3A30; border-color: var(--accent); }
+.code pre { margin: 0; padding: 14px 16px; overflow-x: auto; }
+.code code { background: none; padding: 0; color: var(--code-text); font-size: 14px; line-height: 1.6; white-space: pre; overflow-wrap: normal; tab-size: 2; }
+
+/* Ready */
+.checklist { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.checklist label { display: flex; gap: 12px; align-items: flex-start; background: var(--surface); padding: 12px 16px; border-radius: 12px; box-shadow: var(--shadow); cursor: pointer; }
+.checklist input { margin-top: 3px; }
+.checklist input:checked + span { color: var(--muted); }
+.ready-banner { margin-top: 16px; background: var(--accent); color: #1F3A30; border-radius: 16px; padding: 16px 20px; font-size: 17px; }
+.ready-banner strong { color: #1F3A30; }
+
+/* FAQ */
+.faq { display: grid; gap: 10px; margin-top: 24px; }
+.faq details { background: var(--surface); border-radius: 14px; box-shadow: var(--shadow); padding: 0 18px; }
+.faq summary { cursor: pointer; padding: 14px 0; font-weight: 600; color: var(--ink); list-style-position: outside; }
+.faq details[open] summary { border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.faq details p { font-size: 15px; }
+
+/* Next steps */
+.course {
+  display: grid; gap: 6px; margin: 24px 0; padding: 28px; border-radius: 24px; background: var(--green);
+  color: #fff; text-decoration: none; box-shadow: var(--shadow); transition: box-shadow 300ms ease-in-out, transform 300ms ease-in-out;
+}
+.course:hover { box-shadow: var(--shadow-lift); transform: translateY(-1px); }
+:root[data-theme="dark"] .course { background: #1E3A30; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .course { background: #1E3A30; } }
+.course-k { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.course-t { font-family: var(--font-display); font-size: clamp(26px, 4vw, 34px); line-height: 1.15; }
+.course-d { color: rgba(255, 255, 255, 0.85); max-width: 60ch; }
+.course-cta { justify-self: start; margin-top: 10px; background: var(--accent); color: #1F3A30; font-weight: 700; padding: 10px 20px; border-radius: 999px; }
+
+/* Deck bar */
+.deckbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; height: var(--deck-h);
+  background: var(--bg); border-top: 1px solid var(--line);
+}
+.deckbar-inner { max-width: 1240px; margin: 0 auto; height: 100%; display: grid; grid-template-columns: 280px minmax(0, 1fr); }
+.deckbar-row { display: flex; align-items: center; gap: 12px; padding: 0 48px; }
+.deck-btn {
+  display: inline-flex; align-items: center; gap: 8px; border-radius: 14px; padding: 10px 18px; font-weight: 600; font-size: 15px;
+  border: 1px solid var(--line-strong); background: var(--surface); color: var(--heading); max-width: 46%; min-width: 0;
+}
+.deck-btn span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.deck-btn svg { width: 18px; height: 18px; flex: none; transition: transform 200ms ease-in-out; }
+.deck-btn.next { margin-left: auto; background: var(--btn-bg); color: var(--btn-fg); border-color: transparent; }
+.deck-btn.next:hover svg { transform: translateX(3px); }
+.deck-btn.back:hover svg { transform: translateX(-3px); }
+.deck-btn[hidden] { display: none; }
+.deck-short { display: none; }
+.deck-count { font-size: 13px; color: var(--muted); white-space: nowrap; }
+
+.footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.footer a { color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* Responsive */
+@media (max-width: 960px) {
+  .shell { grid-template-columns: minmax(0, 1fr); }
+  .toc-btn { display: inline-grid; }
+  .toc {
+    position: fixed; top: var(--topbar-h); left: 0; bottom: 0; width: min(320px, 88vw); z-index: 35; height: auto;
+    background: var(--bg); border-right: 1px solid var(--line); box-shadow: var(--shadow-lift);
+    transform: translateX(-105%); transition: transform 250ms ease-in-out; visibility: hidden;
+  }
+  .toc.is-open { transform: none; visibility: visible; }
+  .scrim { position: fixed; inset: var(--topbar-h) 0 0 0; background: rgba(0, 0, 0, 0.35); z-index: 34; }
+  main { padding: 28px 24px calc(var(--deck-h) + 40px); }
+  .deckbar-inner { grid-template-columns: minmax(0, 1fr); }
+  .deckbar-spacer { display: none; }
+  .deckbar-row { padding: 0 16px; }
+}
+@media (max-width: 600px) {
+  .brand-sub, .seg-label { display: none; }
+  .brand-title { font-size: 16px; }
+  .logo-mark { width: 30px; height: 30px; }
+  .topbar { gap: 8px; padding: 0 12px; }
+  .seg button { padding: 4px 9px; font-size: 13px; }
+  main { padding: 20px 16px calc(var(--deck-h) + 32px); }
+  .hero { padding: 24px 20px; border-radius: 20px; }
+  .event > div { grid-template-columns: 1fr; gap: 0; }
+  .pick-grid, .tools { grid-template-columns: 1fr; }
+  .step { padding: 18px 16px 16px 16px; }
+  .step::before { position: static; display: inline-grid; margin-bottom: 8px; }
+  .step-head { flex-direction: column; gap: 8px; }
+  .step-head h3 { padding-top: 0; }
+  .deck-count { display: none; }
+  .deck-btn { padding: 10px 16px; font-size: 15px; }
+  .deck-label { display: none; }
+  .deck-short { display: inline; }
+}
+@media (max-width: 420px) {
+  .brand-text { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+@media print {
+  .topbar, .toc, .deckbar, .copy { display: none !important; }
+  .page[hidden] { display: block !important; }
+  .shell { display: block; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <button type="button" class="icon-btn toc-btn" aria-controls="toc" aria-expanded="false" aria-label="Open contents">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <a class="brand" href="#welcome">
+    <svg aria-hidden="true" focusable="false" class="logo-mark" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify" viewBox="0 0 375 374.999991" preserveAspectRatio="xMidYMid meet" version="1.0"><defs><clipPath id="4c45ff6a85"><path d="M 92 51.777344 L 286 51.777344 L 286 266 L 92 266 Z M 92 51.777344 " clip-rule="nonzero"></path></clipPath></defs><path fill="currentColor" d="M 215.898438 302.167969 C 219.265625 301.824219 221.722656 298.816406 221.375 295.441406 C 221.03125 292.074219 218.023438 289.617188 214.648438 289.964844 C 206.25 290.828125 197.71875 291.261719 189.078125 291.261719 C 180.449219 291.261719 171.90625 290.828125 163.511719 289.964844 C 160.144531 289.617188 157.128906 292.074219 156.789062 295.441406 C 156.441406 298.808594 158.898438 301.824219 162.265625 302.167969 C 171.285156 303.101562 180.242188 303.566406 189.085938 303.566406 C 197.925781 303.566406 206.882812 303.101562 215.898438 302.167969 " fill-opacity="1" fill-rule="nonzero"></path><path fill="currentColor" d="M 203.265625 308.613281 C 201.367188 314.859375 195.601562 319.128906 189.074219 319.128906 C 182.550781 319.128906 176.789062 314.859375 174.886719 308.613281 C 179.347656 308.835938 184.074219 308.945312 189.074219 308.945312 C 194.078125 308.953125 198.804688 308.84375 203.265625 308.613281 " fill-opacity="1" fill-rule="nonzero"></path><path fill="currentColor" d="M 226.390625 283.628906 C 229.746094 283.152344 232.074219 280.039062 231.597656 276.683594 C 231.121094 273.332031 228.007812 271 224.65625 271.476562 C 212.90625 273.171875 201.015625 274.023438 189.078125 274.023438 C 177.144531 274.023438 165.246094 273.171875 153.496094 271.476562 C 150.144531 271 147.03125 273.332031 146.554688 276.683594 C 146.078125 280.039062 148.414062 283.152344 151.769531 283.628906 C 164.1875 285.417969 176.652344 286.320312 189.078125 286.320312 C 201.5 286.324219 213.96875 285.417969 226.390625 283.628906 " fill-opacity="1" fill-rule="nonzero"></path><g clip-path="url(#4c45ff6a85)"><path fill="currentColor" d="M 141.59375 140.753906 C 141.53125 141.230469 141.5 141.707031 141.5 142.199219 L 141.527344 142.988281 L 105.640625 160.304688 C 103.828125 154.28125 102.832031 147.925781 102.832031 140.917969 C 102.832031 135.054688 103.507812 129.222656 104.84375 123.539062 Z M 214.902344 64.503906 L 206.21875 96.546875 C 204.785156 96.574219 203.421875 96.886719 202.183594 97.425781 L 164.75 64.027344 C 181.078125 59.761719 198.644531 59.925781 214.902344 64.503906 Z M 259.15625 93.863281 L 215.503906 101.71875 C 214.925781 100.730469 214.183594 99.851562 213.328125 99.113281 L 222.074219 66.835938 C 236.472656 72.203125 249.46875 81.21875 259.15625 93.863281 Z M 255.457031 192.152344 L 242.574219 182.621094 C 243.273438 180.890625 243.667969 178.996094 243.667969 177.019531 C 243.667969 173.285156 242.289062 169.875 240.015625 167.269531 L 269.304688 111.25 C 273.273438 120.628906 275.335938 130.71875 275.335938 140.917969 C 275.335938 157.863281 269.519531 170.988281 260.402344 184.898438 C 258.792969 187.339844 257.140625 189.757812 255.457031 192.152344 Z M 196.167969 109.636719 L 158.753906 133.457031 C 158.191406 133.042969 157.589844 132.683594 156.949219 132.378906 L 160.378906 70.246094 L 196.804688 102.734375 C 196.195312 104.0625 195.863281 105.542969 195.863281 107.101562 C 195.863281 107.976562 195.96875 108.828125 196.167969 109.636719 Z M 153.304688 194.101562 C 152.785156 194.425781 152.285156 194.792969 151.832031 195.203125 L 109.277344 166.902344 L 144.644531 149.839844 C 146.042969 151.242188 147.820312 152.273438 149.804688 152.746094 Z M 214.148438 174.757812 C 214.039062 175.492188 213.984375 176.246094 213.984375 177.011719 C 213.984375 177.9375 214.066406 178.84375 214.234375 179.722656 L 167.183594 196.460938 C 165.605469 194.503906 163.34375 193.113281 160.757812 192.65625 L 157.300781 151.839844 C 158.441406 151.242188 159.472656 150.460938 160.328125 149.523438 Z M 156.589844 213.5 C 157.335938 213.667969 158.109375 213.757812 158.90625 213.757812 C 160.550781 213.757812 162.109375 213.382812 163.496094 212.710938 L 217.289062 253.335938 C 207.953125 254.566406 198.582031 255.382812 189.105469 255.347656 C 176.96875 255.3125 164.921875 253.929688 152.929688 252.167969 C 151.851562 245.480469 150.03125 239.125 147.554688 232.957031 Z M 149.445312 131.75 C 147.820312 132.199219 146.347656 133.015625 145.121094 134.097656 L 106.953125 116.214844 C 107.742188 113.933594 108.625 111.679688 109.636719 109.472656 C 118.746094 89.410156 134.574219 75.597656 152.957031 67.984375 Z M 217.144531 167.855469 L 163.171875 142.566406 L 163.179688 142.199219 C 163.179688 141.355469 163.082031 140.523438 162.894531 139.730469 L 200.457031 115.820312 C 202.152344 116.984375 204.203125 117.660156 206.410156 117.660156 L 206.730469 117.652344 L 221.632812 164.03125 C 219.898438 164.992188 218.367188 166.300781 217.144531 167.855469 Z M 233.75 163.015625 C 232.25 162.488281 230.628906 162.191406 228.949219 162.183594 L 213.707031 114.75 C 215.257812 113.269531 216.355469 111.324219 216.777344 109.140625 L 263.839844 100.667969 C 264.296875 101.40625 264.730469 102.167969 265.160156 102.921875 Z M 217.46875 186.578125 C 220.195312 189.808594 224.265625 191.855469 228.816406 191.855469 C 232.304688 191.855469 235.511719 190.652344 238.042969 188.636719 L 251.09375 198.292969 C 246.703125 204.460938 242.316406 210.636719 238.4375 217.195312 C 232.191406 227.753906 227.738281 238.445312 225.566406 250.148438 L 168.710938 207.214844 C 169.175781 206.109375 169.453125 204.90625 169.515625 203.640625 Z M 92.96875 140.910156 C 92.96875 192.3125 140.425781 210.707031 144.015625 260.785156 C 159.015625 263.136719 173.851562 265.167969 189.078125 265.210938 C 204.417969 265.253906 219.066406 263.261719 234.144531 260.765625 C 237.726562 210.71875 285.191406 192.304688 285.191406 140.910156 C 285.191406 128.523438 282.507812 116.4375 277.5 105.398438 C 245.089844 34.003906 133.988281 31.972656 100.652344 105.398438 C 95.644531 116.4375 92.96875 128.523438 92.96875 140.910156 Z M 148.28125 203.128906 C 148.28125 205.417969 149.007812 207.539062 150.238281 209.273438 L 143.433594 223.9375 C 142.273438 221.667969 141.019531 219.414062 139.691406 217.160156 C 133.027344 205.894531 124.871094 195.746094 117.722656 184.828125 C 116.488281 182.960938 115.328125 181.101562 114.230469 179.238281 L 148.34375 201.921875 C 148.304688 202.324219 148.28125 202.726562 148.28125 203.128906 Z M 148.28125 203.128906 " fill-opacity="1" fill-rule="evenodd"></path></g></svg>
+    <span class="brand-text"><span class="brand-title">AI Essentials for CompSci</span><span class="brand-sub">Setup guide · Generative Minds</span></span>
+  </a>
+  <div class="topbar-actions">
+    <span class="seg-label small">Laptop</span>
+    <div class="seg" role="group" aria-label="Choose your laptop">
+      <button type="button" data-set-os="mac" aria-pressed="false">Mac</button>
+      <button type="button" data-set-os="win" aria-pressed="false">Windows</button>
+    </div>
+    <button type="button" class="icon-btn theme-btn" aria-label="Switch to dark mode">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="toc" id="toc" aria-label="Contents">
+    <div class="toc-progress">
+      <div class="toc-progress-top"><strong>Your progress</strong><span id="overall-count">0 of 0</span></div>
+      <div class="bar" aria-hidden="true"><span id="overall-bar"></span></div>
+    </div>
+    <ol><li><a href="#welcome" data-nav="welcome"><span class="nav-n">1</span><span class="nav-t">Welcome</span><span class="nav-p" data-progress="welcome"></span></a></li><li><a href="#overview" data-nav="overview"><span class="nav-n">2</span><span class="nav-t">What you&#x27;re setting up</span><span class="nav-p" data-progress="overview"></span></a></li><li><a href="#install" data-nav="install"><span class="nav-n">3</span><span class="nav-t">Part 1: Install the tools</span><span class="nav-p" data-progress="install"></span></a></li><li><a href="#accounts" data-nav="accounts"><span class="nav-n">4</span><span class="nav-t">Part 2: GitHub and Vercel</span><span class="nav-p" data-progress="accounts"></span></a></li><li><a href="#project" data-nav="project"><span class="nav-n">5</span><span class="nav-t">Part 3: Create your project</span><span class="nav-p" data-progress="project"></span></a></li><li><a href="#ready" data-nav="ready"><span class="nav-n">6</span><span class="nav-t">Ready for Wednesday?</span><span class="nav-p" data-progress="ready"></span></a></li><li><a href="#help" data-nav="help"><span class="nav-n">7</span><span class="nav-t">If something goes wrong</span><span class="nav-p" data-progress="help"></span></a></li><li><a href="#next" data-nav="next"><span class="nav-n">8</span><span class="nav-t">After the session</span><span class="nav-p" data-progress="next"></span></a></li></ol>
+  </nav>
+  <main id="main">
+    <section class="page" id="welcome" data-title="Welcome" tabindex="-1" hidden>
+<div class="hero">
+  <p class="eyebrow">CompSoc x Generative Minds</p>
+  <h1>Get set up for AI Essentials for CompSci</h1>
+  <p class="lede">Please do this before the session. It takes about 25 minutes and means we spend our hour building with AI, not waiting for installs.</p>
+  <div class="event">
+    <div><span class="event-k">When</span><span class="event-v">Wednesday 4 November, 14:00 to 16:00</span></div>
+    <div><span class="event-k">Where</span><span class="event-v">Gilmour Room (right of reception), Guild of Students, 160 Mount Pleasant</span></div>
+    <div><span class="event-k">You'll build</span><span class="event-v">Your own portfolio website, live on the internet, using a free AI coding agent</span></div>
+  </div>
+</div>
+<section class="pick" aria-labelledby="pick-h">
+  <h2 id="pick-h">Which laptop are you bringing?</h2>
+  <p>We'll only show you the steps for your laptop. You can change this at any time from the top bar.</p>
+  <div class="pick-grid" role="group" aria-label="Choose your laptop">
+    <button type="button" class="pick-btn" data-set-os="mac" aria-pressed="false">
+      <span class="pick-title">Mac</span><span class="pick-sub">MacBook Air, MacBook Pro or iMac</span>
+    </button>
+    <button type="button" class="pick-btn" data-set-os="win" aria-pressed="false">
+      <span class="pick-title">Windows</span><span class="pick-sub">Any Windows 10 or 11 laptop</span>
+    </button>
+  </div>
+  <p class="small">On Linux? Choose Windows and start from step 5 of the install section.</p>
+</section>
+</section><section class="page" id="overview" data-title="What you&#x27;re setting up" tabindex="-1" hidden>
+<p class="eyebrow">Before you start</p>
+<h1>What you're setting up</h1>
+<p class="lede">Seven things, in three parts. Each step has a <strong>Done</strong> tick so you can see your progress. Your ticks are saved in this browser.</p>
+<div class="tools">
+  <div class="tool" data-os="win"><h3>WSL and Terminal</h3><p>Ubuntu Linux inside Windows, which OpenCode needs, opened in the Windows Terminal app.</p><a href="https://learn.microsoft.com/en-us/windows/wsl/install" target="_blank" rel="noopener">Microsoft's WSL guide</a></div>
+  <div class="tool" data-os="mac"><h3>Homebrew</h3><p>Installs developer tools on a Mac with one command.</p><a href="https://brew.sh" target="_blank" rel="noopener">brew.sh</a></div>
+  <div class="tool"><h3>OpenCode 2</h3><p>The free AI coding agent you'll use in the session.</p><a href="https://opencode.ai/v2/docs/" target="_blank" rel="noopener">OpenCode docs</a></div>
+  <div class="tool"><h3>Node.js</h3><p>Runs your Next.js website on your laptop.</p><a href="https://nodejs.org/en/download" target="_blank" rel="noopener">nodejs.org</a></div>
+  <div class="tool"><h3>GitHub CLI</h3><p>Lets you and OpenCode push your code to GitHub from the terminal.</p><a href="https://cli.github.com" target="_blank" rel="noopener">cli.github.com</a></div>
+  <div class="tool"><h3>GitHub account</h3><p>Where your code lives.</p><a href="https://github.com/signup" target="_blank" rel="noopener">github.com/signup</a></div>
+  <div class="tool"><h3>Vercel account</h3><p>Puts your site live on the internet for free.</p><a href="https://vercel.com/signup" target="_blank" rel="noopener">vercel.com/signup</a></div>
+</div>
+<h2>How to use this guide</h2>
+<ul class="plain">
+  <li>Copy each command with the <strong>Copy</strong> button, paste it into your terminal and press Enter.<span data-os="mac"> On a Mac, paste with <kbd>Cmd</kbd> + <kbd>V</kbd>.</span><span data-os="win"> On Windows, use the <strong>Ubuntu tab in Terminal</strong> and paste with <kbd>Ctrl</kbd> + <kbd>V</kbd> or a right-click.</span></li>
+  <li>Check what you see against the <strong>You should see</strong> line before moving on.</li>
+  <li>Stuck? Look at <a href="#help">If something goes wrong</a>. Still stuck? Come along anyway and a helper will sort you out.</li>
+</ul>
+</section><section class="page" id="install" data-title="Part 1: Install the tools" tabindex="-1" hidden>
+<p class="eyebrow">Part 1 of 3</p>
+<h1>Install the tools</h1>
+<div class="os-switch" role="group" aria-label="Show steps for">
+  <span>Showing steps for</span>
+  <button type="button" data-set-os="mac" aria-pressed="false">Mac</button>
+  <button type="button" data-set-os="win" aria-pressed="false">Windows</button>
+</div>
+<p class="lede" data-os="mac">You'll use Terminal and Homebrew. About 10 to 15 minutes, mostly waiting.</p>
+<p class="lede" data-os="win">OpenCode 2 doesn't run directly on Windows, so you'll install WSL, a Linux terminal built into Windows. About 15 to 20 minutes, including a restart. If you get stuck, see <a href="https://learn.microsoft.com/en-us/windows/wsl/install" target="_blank" rel="noopener">Microsoft's WSL guide</a>.</p>
+<ol class="steps"><li class="step" data-step="mac-terminal" data-os="mac"><div class="step-head"><h3>Open Terminal</h3><label class="done"><input type="checkbox" data-key="mac-terminal"><span>Done</span></label></div><div class="step-body"><p>Press <kbd>Cmd</kbd> + <kbd>Space</kbd>, type <code>Terminal</code> and press Enter.</p><p>To run a command from this page: click <strong>Copy</strong>, click in Terminal, press <kbd>Cmd</kbd> + <kbd>V</kbd> to paste, then press Enter.</p></div></li><li class="step" data-step="mac-brew" data-os="mac"><div class="step-head"><h3>Install Homebrew</h3><label class="done"><input type="checkbox" data-key="mac-brew"><span>Done</span></label></div><div class="step-body"><div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>/bin/bash -c &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&quot;</code></pre></div><p>It asks for your Mac password. Your password won't show as you type, which is normal. It may also install Apple's Command Line Tools (this includes Git) and can take 5 to 10 minutes.</p><p>When it finishes, it prints <strong>Next steps</strong> with a few commands. Copy and run those. On most Macs they look like this:</p><div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>echo &gt;&gt; ~/.zprofile
+echo &#x27;eval &quot;$(/opt/homebrew/bin/brew shellenv)&quot;&#x27; &gt;&gt; ~/.zprofile
+eval &quot;$(/opt/homebrew/bin/brew shellenv)&quot;</code></pre></div><p class="expect"><span class="expect-tag">You should see</span> <code>brew --version</code> prints a version number.</p></div></li><li class="step" data-step="mac-tools" data-os="mac"><div class="step-head"><h3>Install OpenCode, Node.js and GitHub CLI in one go</h3><label class="done"><input type="checkbox" data-key="mac-tools"><span>Done</span></label></div><div class="step-body"><div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>brew install opencode node gh</code></pre></div><div class="note note-tip"><span class="note-tag">Tip</span><p>Homebrew's <code>opencode</code> is OpenCode 2, the version we use in the session.</p></div></div></li><li class="step" data-step="mac-reopen" data-os="mac"><div class="step-head"><h3>Close Terminal and open it again</h3><label class="done"><input type="checkbox" data-key="mac-reopen"><span>Done</span></label></div><div class="step-body"><p>Quit Terminal fully (<kbd>Cmd</kbd> + <kbd>Q</kbd>) and reopen it, so it picks up the new tools.</p></div></li><li class="step" data-step="mac-check" data-os="mac"><div class="step-head"><h3>Check everything installed</h3><label class="done"><input type="checkbox" data-key="mac-check"><span>Done</span></label></div><div class="step-body"><div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>opencode --version
+node --version
+gh --version
+git --version</code></pre></div><p class="expect"><span class="expect-tag">You should see</span> a version number for each. Node should be <strong>v22.20 or higher</strong>.</p></div></li><li class="step" data-step="win-ps" data-os="win"><div class="step-head"><h3>Open PowerShell as administrator</h3><label class="done"><input type="checkbox" data-key="win-ps"><span>Done</span></label></div><div class="step-body"><p>Press the Windows key, type <code>PowerShell</code>, right-click it and choose <strong>Run as administrator</strong>. Click <strong>Yes</strong> if Windows asks for permission.</p><p>The next command is short, so it's easiest to type it in.</p></div></li><li class="step" data-step="win-wsl" data-os="win"><div class="step-head"><h3>Install WSL</h3><label class="done"><input type="checkbox" data-key="win-wsl"><span>Done</span></label></div><div class="step-body"><div class="code" data-lang="powershell"><div class="code-head"><span>PowerShell</span><button type="button" class="copy" aria-label="Copy PowerShell command">Copy</button></div><pre><code>wsl --install</code></pre></div><p>When it finishes, <strong>restart your laptop</strong>.</p><div class="note note-tip"><span class="note-tag">Tip</span><p>If it prints a help page instead, WSL is already there. Run <code>wsl --install -d Ubuntu</code> instead.</p></div></div></li><li class="step" data-step="win-ubuntu" data-os="win"><div class="step-head"><h3>Open Ubuntu in Windows Terminal</h3><label class="done"><input type="checkbox" data-key="win-ubuntu"><span>Done</span></label></div><div class="step-body"><p>After the restart, press the Windows key, type <code>Terminal</code> and open <strong>Terminal</strong>. Click the small <strong>&#8964;</strong> arrow next to the tab and choose <strong>Ubuntu</strong>.</p><figure class="shot"><img src="data:image/webp;base64,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" width="780" height="400" alt="Windows Terminal with the drop-down arrow next to the tab opened, showing a menu of Windows PowerShell, Command Prompt, Azure Cloud Shell, Git Bash and Ubuntu. The arrow and the Ubuntu option are highlighted." loading="lazy" decoding="async"><figcaption>Click the arrow next to the tab, then choose <strong>Ubuntu</strong>. Your list may show different items.</figcaption></figure><p>The first time, it asks you to create a username and password. Your password won't show as you type, which is normal.</p><p class="small">No Terminal app? Some Windows 10 laptops don't have it. Install <a href="https://aka.ms/terminal" target="_blank" rel="noopener">Windows Terminal from the Microsoft Store</a> first.</p><div class="note note-warn"><span class="note-tag">Heads up</span><p>From here on, run every command in the <strong>Ubuntu tab in Terminal</strong>. Don't use the Ubuntu window that opens by itself after the restart, or PowerShell: paste often doesn't work there.</p></div><div class="note note-tip"><span class="note-tag">Tip</span><p><strong>How to paste:</strong> click <strong>Copy</strong> on this page, click in the Ubuntu tab and press <kbd>Ctrl</kbd> + <kbd>V</kbd> (or right-click). Then press Enter.</p></div><p class="expect"><span class="expect-tag">You should see</span> a prompt ending in <code>:~$</code>. If it shows <code>/mnt/c/...</code> instead, type <code>cd ~</code> and press Enter.</p></div></li><li class="step" data-step="win-opencode" data-os="win"><div class="step-head"><h3>Install OpenCode 2</h3><label class="done"><input type="checkbox" data-key="win-opencode"><span>Done</span></label></div><div class="step-body"><div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>curl -fsSL https://opencode.ai/v2/install | bash</code></pre></div><p>When it says <strong>Successfully added opencode to $PATH</strong>, run this so Ubuntu picks it up:</p><div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>exec $SHELL</code></pre></div><p class="expect"><span class="expect-tag">You should see</span> <code>opencode --version</code> prints a version number.</p></div></li><li class="step" data-step="win-node" data-os="win"><div class="step-head"><h3>Install Node.js with nvm</h3><label class="done"><input type="checkbox" data-key="win-node"><span>Done</span></label></div><div class="step-body"><p>nvm is a small tool that installs Node.js inside Ubuntu (<a href="https://github.com/nvm-sh/nvm" target="_blank" rel="noopener">nvm on GitHub</a>).</p><div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.8/install.sh | bash</code></pre></div><p>Reload Ubuntu so it finds nvm, then install Node.js:</p><div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>exec $SHELL
+nvm install --lts</code></pre></div></div></li><li class="step" data-step="win-gh" data-os="win"><div class="step-head"><h3>Install GitHub CLI</h3><label class="done"><input type="checkbox" data-key="win-gh"><span>Done</span></label></div><div class="step-body"><p>This is the official command from <a href="https://github.com/cli/cli/blob/trunk/docs/install_linux.md#debian" target="_blank" rel="noopener">GitHub CLI for Ubuntu</a>. Copy the whole block in one go and paste it with <kbd>Ctrl</kbd> + <kbd>V</kbd>. It asks for your Ubuntu password.</p><div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>(type -p wget &gt;/dev/null || (sudo apt update &amp;&amp; sudo apt install wget -y)) \
+	&amp;&amp; sudo mkdir -p -m 755 /etc/apt/keyrings \
+	&amp;&amp; out=$(mktemp) &amp;&amp; wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+	&amp;&amp; cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg &gt; /dev/null \
+	&amp;&amp; sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+	&amp;&amp; sudo mkdir -p -m 755 /etc/apt/sources.list.d \
+	&amp;&amp; echo &quot;deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main&quot; | sudo tee /etc/apt/sources.list.d/github-cli.list &gt; /dev/null \
+	&amp;&amp; sudo apt update \
+	&amp;&amp; sudo apt install gh -y</code></pre></div><div class="note note-tip"><span class="note-tag">Tip</span><p>Windows may warn that you're pasting text with <strong>multiple lines</strong>. That's expected here: click <strong>Paste anyway</strong>, then press Enter if it doesn't start by itself.</p></div></div></li><li class="step" data-step="win-check" data-os="win"><div class="step-head"><h3>Check everything installed</h3><label class="done"><input type="checkbox" data-key="win-check"><span>Done</span></label></div><div class="step-body"><div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>opencode --version
+node --version
+gh --version
+git --version</code></pre></div><p class="expect"><span class="expect-tag">You should see</span> a version number for each (Git comes with Ubuntu). Node should be <strong>v22.20 or higher</strong>.</p></div></li></ol>
+</section><section class="page" id="accounts" data-title="Part 2: GitHub and Vercel" tabindex="-1" hidden>
+<p class="eyebrow">Part 2 of 3</p>
+<h1>GitHub and Vercel</h1>
+<p class="lede">These accounts let OpenCode push your code and let you put your site live in the session. <span data-os="win">Run commands in <strong>Ubuntu</strong>.</span><span data-os="mac">Run commands in <strong>Terminal</strong>.</span></p>
+<ol class="steps"><li class="step" data-step="acc-github"><div class="step-head"><h3>Create a GitHub account</h3><label class="done"><input type="checkbox" data-key="acc-github"><span>Done</span></label></div><div class="step-body"><p>Sign up at <a href="https://github.com/signup" target="_blank" rel="noopener">github.com/signup</a> if you don't have one. As a student you can also apply for the free <a href="https://education.github.com/pack" target="_blank" rel="noopener">GitHub Student Developer Pack</a>.</p></div></li><li class="step" data-step="acc-vercel"><div class="step-head"><h3>Create a Vercel account</h3><label class="done"><input type="checkbox" data-key="acc-vercel"><span>Done</span></label></div><div class="step-body"><p>Go to <a href="https://vercel.com/signup" target="_blank" rel="noopener">vercel.com/signup</a>, choose the free <strong>Hobby</strong> plan, then <strong>Continue with GitHub</strong> so the two accounts are linked.</p></div></li><li class="step" data-step="acc-git"><div class="step-head"><h3>Tell Git who you are</h3><label class="done"><input type="checkbox" data-key="acc-git"><span>Done</span></label></div><div class="step-body"><p>Use your name and the same email as your GitHub account.</p><div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>git config --global user.name &quot;Your Name&quot;
+git config --global user.email &quot;you@example.com&quot;</code></pre></div></div></li><li class="step" data-step="acc-gh"><div class="step-head"><h3>Sign in to GitHub from the terminal</h3><label class="done"><input type="checkbox" data-key="acc-gh"><span>Done</span></label></div><div class="step-body"><div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>gh auth login</code></pre></div><p>Use the arrow keys and Enter to choose:</p><ol class="choices"><li><strong>GitHub.com</strong></li><li><strong>HTTPS</strong></li><li><strong>Yes</strong> to authenticate Git with your GitHub credentials</li><li><strong>Login with a web browser</strong></li></ol><p>Copy the one-time code it shows and press Enter. Paste the code into the browser page that opens and click <strong>Authorize</strong>.</p><p data-os="win" class="small">On Windows the browser might not open from Ubuntu. If so, open <code>https://github.com/login/device</code> in your normal browser and paste the code there.</p></div></li><li class="step" data-step="acc-check"><div class="step-head"><h3>Check you're signed in</h3><label class="done"><input type="checkbox" data-key="acc-check"><span>Done</span></label></div><div class="step-body"><div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>gh auth status</code></pre></div><p class="expect"><span class="expect-tag">You should see</span> <strong>Logged in to github.com</strong> with your username.</p></div></li></ol>
+</section><section class="page" id="project" data-title="Part 3: Create your project" tabindex="-1" hidden>
+<p class="eyebrow">Part 3 of 3</p>
+<h1>Create your project</h1>
+<p class="lede">The last part: a starter Next.js site that we'll turn into your portfolio in the session.</p>
+<ol class="steps"><li class="step" data-step="proj-create"><div class="step-head"><h3>Create your project</h3><label class="done"><input type="checkbox" data-key="proj-create"><span>Done</span></label></div><div class="step-body"><p>This downloads everything the site needs, so it can take a few minutes.</p><div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>cd ~
+npx create-next-app@latest my-portfolio --yes</code></pre></div><p>If it asks <code>Ok to proceed? (y)</code>, type <code>y</code> and press Enter.</p></div></li><li class="step" data-step="proj-run"><div class="step-head"><h3>Start your site</h3><label class="done"><input type="checkbox" data-key="proj-run"><span>Done</span></label></div><div class="step-body"><div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>cd my-portfolio
+npm run dev</code></pre></div><p>Open <a href="http://localhost:3000" target="_blank" rel="noopener">localhost:3000</a> in your browser.</p><p class="expect"><span class="expect-tag">You should see</span> the Next.js starter page. Go back to the terminal and press <kbd>Ctrl</kbd> + <kbd>C</kbd> to stop it.</p></div></li><li class="step" data-step="proj-models"><div class="step-head"><h3>Check you can see the free AI models</h3><label class="done"><input type="checkbox" data-key="proj-models"><span>Done</span></label></div><div class="step-body"><p>Still inside <code>my-portfolio</code>, start OpenCode:</p><div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>opencode</code></pre></div><p>Type this and press Enter:</p><div class="code" data-lang="text"><div class="code-head"><span>Type this</span><button type="button" class="copy" aria-label="Copy Type this command">Copy</button></div><pre><code>/models</code></pre></div><p class="expect"><span class="expect-tag">You should see</span> models marked <strong>Free</strong>, such as <strong>GLM-5.3-Flash Free</strong>. Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to exit.</p><div class="note note-tip"><span class="note-tag">Tip</span><p>No free models listed? Type <code>/connect</code>, choose <strong>OpenCode</strong> and sign in with a free account, then try <code>/models</code> again.</p></div></div></li></ol>
+</section><section class="page" id="ready" data-title="Ready for Wednesday?" tabindex="-1" hidden>
+<p class="eyebrow">Final check</p>
+<h1>Ready for Wednesday?</h1>
+<p class="lede">Run this one command. If it prints your versions, <strong>Logged in to github.com</strong> and your email, you're set.</p>
+<div class="code" data-lang="bash"><div class="code-head"><span>Terminal</span><button type="button" class="copy" aria-label="Copy Terminal command">Copy</button></div><pre><code>cd ~/my-portfolio
+opencode --version &amp;&amp; node --version &amp;&amp; gh auth status &amp;&amp; git config user.email</code></pre></div>
+<h2>Checklist</h2>
+<ul class="checklist"><li><label><input type="checkbox" data-key="ready-opencode"><span><code>opencode --version</code> prints a version</span></label></li><li><label><input type="checkbox" data-key="ready-node"><span><code>node --version</code> is v22.20 or higher</span></label></li><li><label><input type="checkbox" data-key="ready-gh"><span><code>gh auth status</code> says you're logged in</span></label></li><li><label><input type="checkbox" data-key="ready-vercel"><span>Vercel account created with Continue with GitHub</span></label></li><li><label><input type="checkbox" data-key="ready-site"><span><code>my-portfolio</code> runs at localhost:3000</span></label></li><li><label><input type="checkbox" data-key="ready-models"><span>Free models show up in OpenCode's <code>/models</code></span></label></li><li><label><input type="checkbox" data-key="ready-laptop"><span>Laptop charged, and charger in your bag</span></label></li></ul>
+<div class="ready-banner" role="status" aria-live="polite" hidden>
+  <strong>You're all set.</strong> See you Wednesday at 14:00 in the Gilmour Room.
+</div>
+<h2>On the day</h2>
+<ul class="plain">
+  <li><strong>Bring</strong> your laptop, fully charged, and its charger.</li>
+  <li><strong>You don't need</strong> an API key or to pay for anything. We use OpenCode's free models.</li>
+  <li><strong>Didn't finish?</strong> Come anyway. Sit next to someone whose setup works and a helper will get you going.</li>
+</ul>
+</section><section class="page" id="help" data-title="If something goes wrong" tabindex="-1" hidden>
+<p class="eyebrow">Troubleshooting</p>
+<h1>If something goes wrong</h1>
+<p class="lede">The most common problems and their fixes. If none of these help, don't worry: come along and we'll fix it at the start.</p>
+<div class="faq"><details><summary>Paste doesn't work, or <code>^V</code> appears (Windows)</summary><p>You're probably in the plain Ubuntu or PowerShell window, which has no tabs. Open the <strong>Terminal</strong> app and choose <strong>Ubuntu</strong> from the <strong>&#8964;</strong> arrow, then paste with <kbd>Ctrl</kbd> + <kbd>V</kbd>. Stuck in the plain window? Click the icon in its top-left corner, then <strong>Edit</strong> and <strong>Paste</strong>. A warning about <strong>multiple lines</strong> is normal: click <strong>Paste anyway</strong>.</p></details><details><summary><code>opencode: command not found</code> straight after installing</summary><p>The install worked, but your terminal hasn't picked it up yet. Run <code>exec $SHELL</code>, or close the terminal and open a new one.</p></details><details><summary>The prompt shows <code>/mnt/c/WINDOWS/system32</code> (Windows)</summary><p>You're in a Windows folder, not your Linux home. Type <code>cd ~</code> and press Enter. Better still, use the Ubuntu tab in Terminal, which starts in the right place.</p></details><details><summary><code>command not found</code> after installing something</summary><p>Run <code>exec $SHELL</code>, or close your terminal completely and open a new one. New tools are only picked up by a fresh terminal. On a Mac, check you ran the Homebrew <strong>Next steps</strong> commands.</p></details><details><summary><code>nvm: command not found</code> (Windows)</summary><p>Run <code>exec $SHELL</code> after installing nvm, then <code>nvm install --lts</code>.</p></details><details><summary><code>wsl --install</code> fails or mentions virtualisation (Windows)</summary><p>Virtualisation may be switched off on your laptop. Follow <a href="https://learn.microsoft.com/en-us/windows/wsl/troubleshooting" target="_blank" rel="noopener">Microsoft WSL troubleshooting</a>, or skip it and a helper will help you on the day.</p></details><details><summary>OpenCode install complains about <code>unzip</code> (Windows)</summary><p>Run <code>sudo apt install unzip -y</code> in Ubuntu, then run the OpenCode install command again.</p></details><details><summary>Node is older than v22.20</summary><p>Mac: <code>brew upgrade node</code>. Windows: <code>nvm install --lts</code> then <code>nvm alias default 'lts/*'</code>. Then reopen your terminal.</p></details><details><summary>The browser doesn't open for <code>gh auth login</code></summary><p>Open <code>https://github.com/login/device</code> yourself and paste the one-time code from the terminal.</p></details><details><summary><code>gh auth status</code> says you're not logged in</summary><p>Run <code>gh auth login</code> again and choose HTTPS, then Yes to authenticate Git.</p></details><details><summary>Port 3000 is already in use</summary><p>Next.js will pick another port, such as 3001. Open the address it prints in the terminal.</p></details><details><summary>No free models in <code>/models</code></summary><p>Inside OpenCode, type <code>/connect</code>, choose <strong>OpenCode</strong> and sign in with a free account. Then try <code>/models</code> again.</p></details><details><summary>I've got a Chromebook or a tablet</summary><p>These won't run the tools. Come along and pair with someone, or borrow a laptop if you can.</p></details></div>
+</section><section class="page" id="next" data-title="After the session" tabindex="-1" hidden>
+<p class="eyebrow">Keep going</p>
+<h1>After the session</h1>
+<p class="lede">Today is a taster. The full course goes much deeper, and you can keep using the same free models.</p>
+<a class="course" href="https://www.boot.dev/courses/learn-ai-coding" target="_blank" rel="noopener">
+  <span class="course-k">Recommended next step</span>
+  <span class="course-t">Boot.dev: Learn AI Coding</span>
+  <span class="course-d">13 chapters and about 20 hours on coding with OpenCode: models, prompting, context, AGENTS.md rules, feedback loops, skills, MCP, browser automation and plugins. You build a Python interpreter along the way.</span>
+  <span class="course-cta">Start the course</span>
+</a>
+<ul class="plain">
+  <li>A free Boot.dev account gives you the interactive features for the first few chapters. After that the content stays free to read and watch.</li>
+  <li>It works with OpenCode's free models, so you can carry on exactly where today leaves off.</li>
+  <li>Best if you can already write and debug simple code.</li>
+</ul>
+<h2>Useful links</h2>
+<ul class="plain">
+  <li><a href="https://opencode.ai/v2/docs/" target="_blank" rel="noopener">OpenCode docs</a></li>
+  <li><a href="https://skills.sh" target="_blank" rel="noopener">skills.sh: the agent skills directory</a></li>
+  <li><a href="https://vercel.com/docs" target="_blank" rel="noopener">Vercel docs</a></li>
+  <li><a href="https://genminds.co.uk" target="_blank" rel="noopener">Generative Minds</a></li>
+</ul>
+</section>
+    <footer class="footer">
+      <span>© Generative Minds 2026</span>
+      <a href="https://genminds.co.uk" target="_blank" rel="noopener">genminds.co.uk</a>
+      <a href="mailto:connect@genminds.co.uk">connect@genminds.co.uk</a>
+      <span>Your ticks are saved only in this browser.</span>
+    </footer>
+  </main>
+</div>
+
+<div class="deckbar" role="navigation" aria-label="Page navigation">
+  <div class="deckbar-inner">
+    <div class="deckbar-spacer"></div>
+    <div class="deckbar-row">
+      <button type="button" class="deck-btn back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span class="deck-label">Back</span><span class="deck-short">Back</span>
+      </button>
+      <span class="deck-count" aria-live="polite"></span>
+      <button type="button" class="deck-btn next">
+        <span class="deck-label">Next</span><span class="deck-short">Next</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sr-only" id="announcer" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+  var P = 'gm-compsci-v1-';
+  var root = document.documentElement;
+
+  function get(k) { try { return localStorage.getItem(P + k); } catch (e) { return null; } }
+  function set(k, v) { try { localStorage.setItem(P + k, v); } catch (e) { /* storage blocked: carry on */ } }
+  function getJSON(k, fallback) { try { var v = JSON.parse(get(k)); return v && typeof v === 'object' ? v : fallback; } catch (e) { return fallback; } }
+
+  var announcer = document.getElementById('announcer');
+  function announce(msg) { announcer.textContent = ''; setTimeout(function () { announcer.textContent = msg; }, 30); }
+
+  /* ---------- Theme ---------- */
+  var themeBtn = document.querySelector('.theme-btn');
+  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function isDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return !!(mq && mq.matches);
+  }
+  function syncThemeBtn() { themeBtn.setAttribute('aria-label', isDark() ? 'Switch to light mode' : 'Switch to dark mode'); }
+  themeBtn.addEventListener('click', function () {
+    var next = isDark() ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    set('theme', next);
+    syncThemeBtn();
+  });
+  if (mq && mq.addEventListener) mq.addEventListener('change', syncThemeBtn);
+  syncThemeBtn();
+
+  /* ---------- Laptop choice ---------- */
+  function setOS(os, fromUser) {
+    root.setAttribute('data-os', os);
+    if (fromUser) set('os', os);
+    document.querySelectorAll('[data-set-os]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-set-os') === os));
+    });
+    updateProgress();
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-set-os]');
+    if (!b) return;
+    var os = b.getAttribute('data-set-os');
+    setOS(os, true);
+    announce('Showing steps for ' + (os === 'mac' ? 'Mac' : 'Windows'));
+    if (b.classList.contains('pick-btn')) go(1, true);
+  });
+
+  /* ---------- Ticks and progress ---------- */
+  var ticks = getJSON('ticks', {});
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('input[type="checkbox"][data-key]'));
+
+  function applies(el) {
+    var scoped = el.closest('[data-os]');
+    return !scoped || scoped.getAttribute('data-os') === root.getAttribute('data-os');
+  }
+  function updateProgress() {
+    var total = 0, done = 0;
+    document.querySelectorAll('.page').forEach(function (page) {
+      var pt = 0, pd = 0;
+      page.querySelectorAll('.step input[data-key]').forEach(function (cb) {
+        if (!applies(cb)) return;
+        pt++; if (cb.checked) pd++;
+      });
+      total += pt; done += pd;
+      var badge = document.querySelector('[data-progress="' + page.id + '"]');
+      if (badge) {
+        badge.textContent = pt ? pd + '/' + pt : '';
+        badge.classList.toggle('is-complete', pt > 0 && pd === pt);
+        badge.setAttribute('aria-label', pt ? pd + ' of ' + pt + ' steps done' : '');
+      }
+    });
+    document.getElementById('overall-count').textContent = done + ' of ' + total + ' steps';
+    document.getElementById('overall-bar').style.width = total ? Math.round(done / total * 100) + '%' : '0';
+    var list = document.querySelectorAll('.checklist input');
+    var allReady = list.length > 0 && Array.prototype.every.call(list, function (c) { return c.checked; });
+    var banner = document.querySelector('.ready-banner');
+    if (banner) banner.hidden = !allReady;
+  }
+  boxes.forEach(function (cb) {
+    var k = cb.getAttribute('data-key');
+    cb.checked = !!ticks[k];
+    var stepEl = cb.closest('.step');
+    if (stepEl) stepEl.classList.toggle('is-done', cb.checked);
+    cb.addEventListener('change', function () {
+      ticks[k] = cb.checked;
+      set('ticks', JSON.stringify(ticks));
+      if (stepEl) stepEl.classList.toggle('is-done', cb.checked);
+      updateProgress();
+    });
+  });
+
+  /* ---------- Copy buttons ---------- */
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed'; ta.style.top = '-1000px'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.copy');
+    if (!btn) return;
+    var text = btn.closest('.code').querySelector('code').textContent;
+    function done(ok) {
+      btn.textContent = ok ? 'Copied' : 'Select it';
+      btn.classList.toggle('is-copied', ok);
+      announce(ok ? 'Copied to clipboard' : 'Copy failed. Select the text and copy it yourself.');
+      clearTimeout(btn._t);
+      btn._t = setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('is-copied'); }, 2000);
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(fallbackCopy(text)); });
+    } else {
+      done(fallbackCopy(text));
+    }
+  });
+
+  /* ---------- Pages ---------- */
+  var pages = Array.prototype.slice.call(document.querySelectorAll('.page'));
+  var ids = pages.map(function (p) { return p.id; });
+  var current = 0;
+  var backBtn = document.querySelector('.deck-btn.back');
+  var nextBtn = document.querySelector('.deck-btn.next');
+  var count = document.querySelector('.deck-count');
+
+  function show(i, focus) {
+    i = Math.max(0, Math.min(pages.length - 1, i));
+    current = i;
+    pages.forEach(function (p, n) { p.hidden = n !== i; });
+    document.querySelectorAll('[data-nav]').forEach(function (a) {
+      if (a.getAttribute('data-nav') === ids[i]) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+    var prev = pages[i - 1], next = pages[i + 1];
+    backBtn.hidden = !prev;
+    nextBtn.hidden = !next;
+    if (prev) { backBtn.querySelector('.deck-label').textContent = prev.getAttribute('data-title'); backBtn.setAttribute('aria-label', 'Back: ' + prev.getAttribute('data-title')); }
+    if (next) { nextBtn.querySelector('.deck-label').textContent = i === 0 ? 'Start setup' : next.getAttribute('data-title'); nextBtn.querySelector('.deck-short').textContent = i === 0 ? 'Start' : 'Next'; nextBtn.setAttribute('aria-label', 'Next: ' + next.getAttribute('data-title')); }
+    count.textContent = 'Page ' + (i + 1) + ' of ' + pages.length;
+    document.title = (i === 0 ? 'AI Essentials Setup' : pages[i].getAttribute('data-title') + ' · AI Essentials Setup');
+    set('page', ids[i]);
+    if (focus) {
+      window.scrollTo(0, 0);
+      var h = pages[i].querySelector('h1');
+      if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+    }
+  }
+  function go(delta, focus) {
+    var target = current + delta;
+    if (target < 0 || target >= pages.length) return;
+    location.hash = ids[target];
+    if (focus) setTimeout(function () { var h = pages[current].querySelector('h1'); if (h) h.focus({ preventScroll: true }); }, 0);
+  }
+  function fromHash(focus) {
+    var id = decodeURIComponent((location.hash || '').slice(1));
+    var i = ids.indexOf(id);
+    if (i === -1) { var saved = get('page'); i = Math.max(0, ids.indexOf(saved)); }
+    show(i, focus);
+  }
+  window.addEventListener('hashchange', function () { fromHash(true); closeToc(); });
+  backBtn.addEventListener('click', function () { go(-1, true); });
+  nextBtn.addEventListener('click', function () { go(1, true); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    var t = e.target;
+    if (t && (t.closest('input, textarea, select, summary, [contenteditable="true"]'))) return;
+    if (e.key === 'ArrowRight') { go(1, true); }
+    else if (e.key === 'ArrowLeft') { go(-1, true); }
+    else if (e.key === 'Escape') { closeToc(); }
+  });
+
+  /* ---------- Contents drawer (small screens) ---------- */
+  var toc = document.getElementById('toc');
+  var tocBtn = document.querySelector('.toc-btn');
+  var scrim = null;
+  function openToc() {
+    toc.classList.add('is-open');
+    tocBtn.setAttribute('aria-expanded', 'true'); tocBtn.setAttribute('aria-label', 'Close contents');
+    scrim = document.createElement('div'); scrim.className = 'scrim';
+    scrim.addEventListener('click', closeToc);
+    document.body.appendChild(scrim);
+    var a = toc.querySelector('[aria-current="page"]') || toc.querySelector('a');
+    if (a) a.focus();
+  }
+  function closeToc() {
+    if (!toc.classList.contains('is-open')) return;
+    toc.classList.remove('is-open');
+    tocBtn.setAttribute('aria-expanded', 'false'); tocBtn.setAttribute('aria-label', 'Open contents');
+    if (scrim) { scrim.remove(); scrim = null; }
+  }
+  tocBtn.addEventListener('click', function () { toc.classList.contains('is-open') ? closeToc() : openToc(); });
+
+  /* ---------- Start ---------- */
+  setOS(root.getAttribute('data-os') || 'win', false);
+  fromHash(false);
+})();
+</script>
+</body>
+</html>
